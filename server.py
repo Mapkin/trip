@@ -4,7 +4,7 @@ from flask import Flask, g
 import hipchat
 app = Flask(__name__)
 
-@app.route('/<room_id>', methods='POST')
+@app.route('/<room_id>', methods=['POST'])
 def callback(room_id):
     if not hasattr(g, 'hipchatcli'):
         g.hipchatcli = hipchat.HipChat(os.environ['HIPCHAT_TOKEN'])
