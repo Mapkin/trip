@@ -18,31 +18,61 @@ def callback(room_id):
 
     js = json.loads(request.data)
     action = js['action']
+    data = action['data']
     if action['type'] == 'updateCard':
-        data = action['data']
-        # Capture moving a card from one list to another
+        # Move a card from one list to another
         if 'listBefore' in data:
             fmt = ("{action[memberCreator][fullName]} moved {card_link} from "
                    "'{data[listBefore][name]}' to '{data[listAfter][name]}'")
             message = fmt.format(
                 action=action, data=data, 
                 card_link=_card_link(data['board'], data['card']))
+        # Rename a card
+        elif 'name' in data['old']:
+            fmt = ("{action[memberCreator][fullName]} renamed "
+                   "'{data[old][name]}' to {card_link}")
+            message = fmt.format(
+                action=action, data=data,
+                card_link=_card_link(data['board'], data['card']))
     elif action['type'] == 'commentCard':
+        # Comment on a card
         fmt = ("{action[memberCreator][fullName]} commented on "
-               "{card_link}")
-        message = fmt.format(action=action, 
+               "{card_link}: {data[text]}")
+        message = fmt.format(action=action, data=data,
                              card_link=_card_link(data['board'], data['card']))
     elif action['type'] == 'createCard':
+        # Create a card
         fmt = ("{action[memberCreator][fullName]} added {card_link} "
                "to '{data[list][name]}'")
-        message = fmt.format(action=action, card_link=_card_link(data['board'],
-                             data['card']), data=data)
+        message = fmt.format(action=action, data=data,
+                             card_link=_card_link(data['board'], data['card']))
+    elif action['type'] == 'deleteCard':
+        # Delete card
+        fmt = ("{action[memberCreator][fullName]} deleted card "
+               "'{data[card][idShort]}'")
+        message = fmt.format(action=action, data=data)
+    elif action['type'] == 'updateCheckItemStateOnCard':
+        # Check/Uncheck an item
+        if data['checkItem']['state'] == 'complete':
+            check = 'checked off'
+        else:
+            check = 'unchecked'
+        fmt = ("{action[memberCreator][fullName]} {check} "
+               "'{data[checkItem][name]}' on {card_link}")
+        message = fmt.format(
+            action=action, check=check, data=data,
+            card_link=_card_link(data['board'], data['card']))
+    elif action['type'] in ['addChecklistToCard', 'removeChecklistFromCard',
+            'createCheckItem']:
+        # Ignore all the above types
+        ignore = True
 
-    if message is None and not ignore:
-        message = pprint.pformat(js)
+    if not ignore:
+        if message is None:
+            message = pprint.pformat(js)
+        sender = os.environ['HIPCHAT_SENDER']
+        g.hipchatcli.message_room(room_id, sender, message, message_format='html')
 
-    sender = os.environ['HIPCHAT_SENDER']
-    g.hipchatcli.message_room(room_id, sender, message)
     return 'success'
 
 
