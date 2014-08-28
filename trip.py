@@ -12,8 +12,21 @@ def callback(room_id):
         g.hipchatcli = hipchat.HipChat(os.environ['HIPCHAT_TOKEN'])
 
     sender = os.environ['HIPCHAT_SENDER']
-    data = json.loads(request.data)
-    g.hipchatcli.message_room(room_id, sender, pprint.pformat(data))
+    js = json.loads(request.data)
+    action = js['action']
+    message = None
+    if action['type'] == 'updateCard':
+        data = action['data']
+        # Capture moving a card from one list to another
+        if 'listBefore' in data:
+            fmt = ("{action[memberCreator][fullName]} moved '{data[card][name]}' from "
+                   "'{data[listBefore][name]}' to '{data[listAfter][name]}'")
+            message = fmt.format(action=action, data=data)
+
+    if message is None:
+        message = pprint.pformat(js)
+    
+    g.hipchatcli.message_room(room_id, sender, message)
     return 'success'
 
 
