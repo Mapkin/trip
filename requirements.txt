@@ -1,0 +1,13 @@
+Flask==0.10.1
+Jinja2==2.7.3
+MarkupSafe==0.23
+Werkzeug==0.9.6
+autoenv==1.0.0
+click==3.2
+gunicorn==19.1.1
+httplib2==0.9
+itsdangerous==0.24
+oauth2==1.5.211
+py-trello==0.1.6
+python-simple-hipchat==0.3.3
+wsgiref==0.1.2
