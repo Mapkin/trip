@@ -62,8 +62,14 @@ def callback(room_id):
         message = fmt.format(
             action=action, check=check, data=data,
             card_link=_card_link(data['board'], data['card']))
+    elif action['type'] == 'moveCardToBoard':
+        # Move card to/from the board
+        fmt = ("{action[memberCreator][fullName]} moved {card_link} from the "
+               "'{data[boardSource][name]}' board to '{data[board][name]}'")
+        message = fmt.format(action=action, data=data,
+                             card_link=_card_link(data['board'], data['card']))
     elif action['type'] in ['addChecklistToCard', 'removeChecklistFromCard',
-            'createCheckItem']:
+            'createCheckItem', 'deleteComment']:
         # Ignore all the above types
         ignore = True
 
