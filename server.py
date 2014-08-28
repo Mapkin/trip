@@ -1,6 +1,8 @@
+import json
 import os
+import pprint
 
-from flask import Flask, g
+from flask import Flask, request, g
 import hipchat
 app = Flask(__name__)
 
@@ -10,7 +12,8 @@ def callback(room_id):
         g.hipchatcli = hipchat.HipChat(os.environ['HIPCHAT_TOKEN'])
 
     sender = os.environ['HIPCHAT_SENDER']
-    g.hipchatcli.message_room(room_id, sender, 'test')
+    data = json.loads(request.data)
+    g.hipchatcli.message_room(room_id, sender, pprint.pformat(data))
     return 'success'
 
 
