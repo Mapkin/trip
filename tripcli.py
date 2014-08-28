@@ -46,7 +46,7 @@ def listwebhooks(ctx):
     trellocli = ctx.obj[0]
     hooks = trellocli.list_hooks()
     for hook in hooks:
-        pass
+        print('{0.callback_url}: {0.id}'.format(hook))
 
 
 @webhooks.command(name='create')
@@ -57,7 +57,15 @@ def listwebhooks(ctx):
 def createwebhook(ctx, domain, room_id, model_id):
     trellocli = ctx.obj[0]
     url = callback_url(domain, room_id, model_id)
-    print(url)
+    trellocli.create_hook(url, model_id)
+
+
+@webhooks.command(name='remove')
+@click.argument('hook-id')
+@click.pass_context
+def removewebhook(ctx, hook_id):
+    trellocli = ctx.obj[0]
+    trello.WebHook(trellocli, None, hook_id=hook_id).delete()
 
 
 # Define hipchat rooms group
