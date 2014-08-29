@@ -34,6 +34,16 @@ def callback(room_id):
             message = fmt.format(
                 action=action, data=data,
                 card_link=_card_link(data['board'], data['card']))
+        # Update card description
+        elif 'desc' in data['old']:
+            fmt = ("{action[memberCreator][fullName]} updated "
+                   "the description for {card_link}")
+            message = fmt.format(
+                action=action,
+                card_link=_card_link(data['board'], data['card']))
+        # Ignore moving a card within a list
+        elif 'pos' in data['old']:
+            ignore = True 
     elif action['type'] == 'commentCard':
         # Comment on a card
         fmt = ("{action[memberCreator][fullName]} commented on "
