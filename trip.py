@@ -4,6 +4,7 @@ import pprint
 
 from flask import Flask, request, g
 import hipchat
+import markdown
 app = Flask(__name__)
 
 
@@ -66,9 +67,10 @@ def _get_message(js):
             ignore = True
     elif action['type'] == 'commentCard':
         # Comment on a card
+        text = markdown.markdown(data['text'])
         fmt = ("{action[memberCreator][fullName]} commented on "
-               "{card_link}: {data[text]}")
-        message = fmt.format(action=action, data=data,
+               "{card_link}: {text}")
+        message = fmt.format(action=action, data=data, text=text,
                              card_link=_card_link(data['board'], data['card']))
     elif action['type'] == 'createCard':
         # Create a card
