@@ -19,7 +19,8 @@ def callback(room_id):
         if message is None:
             message = pprint.pformat(js)
         sender = os.environ['HIPCHAT_SENDER']
-        g.hipchatcli.message_room(room_id, sender, message, message_format='html')
+        g.hipchatcli.message_room(room_id, sender, message,
+                                  message_format='html')
 
     return 'success'
 
@@ -38,7 +39,7 @@ def _get_message(js):
             fmt = ("{action[memberCreator][fullName]} moved {card_link} from "
                    "'{data[listBefore][name]}' to '{data[listAfter][name]}'")
             message = fmt.format(
-                action=action, data=data, 
+                action=action, data=data,
                 card_link=_card_link(data['board'], data['card']))
         # Rename a card
         elif 'name' in data['old']:
@@ -56,7 +57,7 @@ def _get_message(js):
                 card_link=_card_link(data['board'], data['card']))
         # Ignore moving a card within a list
         elif 'pos' in data['old']:
-            ignore = True 
+            ignore = True
     elif action['type'] == 'commentCard':
         # Comment on a card
         fmt = ("{action[memberCreator][fullName]} commented on "
@@ -98,7 +99,7 @@ def _get_message(js):
         message = fmt.format(action=action, data=data,
                              card_link=_card_link(data['board'], data['card']))
     elif action['type'] in ['addChecklistToCard', 'removeChecklistFromCard',
-            'createCheckItem', 'deleteComment']:
+                            'createCheckItem', 'deleteComment']:
         # Ignore all the above types
         ignore = True
 
@@ -106,10 +107,12 @@ def _get_message(js):
 
 
 def _card_link(board, card):
-    txt = "<a href='https://trello.com/card/{board[id]}/{card[idShort]}'>{card[name]}</a>".format(
+    txt = ("<a href='https://trello.com/card/{board[id]}/{card[idShort]}'>"
+           "{card[name]}"
+           "</a>").format(
         board=board, card=card)
     return txt
-    
+
 
 if __name__ == '__main__':
     app.run()
