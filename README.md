@@ -32,3 +32,12 @@ RoomID
 
 Note that when you create a webhook, Trello tries to hit the server so it must
 be up and running otherwise it will fail.
+
+
+A typical use might look like:
+
+`$ tripcli.py boards list` - copy the Trello board you want to follow
+
+`$ tripcli.py rooms list` - copy the Hipchat room you want to follow
+
+`$ tripcli.py webhooks create --domain tripbot.domain.com --room-id ROOMID MODELID`
