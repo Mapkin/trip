@@ -7,8 +7,11 @@ import hipchat
 app = Flask(__name__)
 
 
-@app.route('/<room_id>', methods=['POST'])
+@app.route('/<room_id>', methods=['GET', 'POST'])
 def callback(room_id):
+    if request.method == 'HEAD':
+        return 'success'
+
     if not hasattr(g, 'hipchatcli'):
         g.hipchatcli = hipchat.HipChat(os.environ['HIPCHAT_TOKEN'])
 
