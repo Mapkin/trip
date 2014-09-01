@@ -33,7 +33,6 @@ RoomID
 Note that when you create a webhook, Trello tries to hit the server so it must
 be up and running otherwise it will fail.
 
-
 A typical use might look like:
 
 `$ tripcli.py boards list` - copy the Trello board you want to follow
@@ -41,3 +40,14 @@ A typical use might look like:
 `$ tripcli.py rooms list` - copy the Hipchat room you want to follow
 
 `$ tripcli.py webhooks create --domain tripbot.domain.com --room-id ROOMID MODELID`
+
+Keys
+----
+Log in to Trello and visit https://trello.com/1/appKey/generate. Grab the key
+and set the environment variable (or use it appropriately on the command
+line).
+To get the user token you need to go through the auth flow. See here:
+https://trello.com/docs/gettingstarted/#getting-a-token-from-a-user
+
+Hipchat needs an admin token - generated from the "API" tab on the Hipchat
+website after logging in.
