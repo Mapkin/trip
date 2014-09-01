@@ -16,11 +16,14 @@ def callback(room_id):
     message, ignore = _get_message(js)
 
     if not ignore:
-        if message is None:
+        if message is None and 'HIPCHAT_DEBUG_ROOM_ID' in os.environ:
             message = pprint.pformat(js)
+            room_id = os.environ['HIPCHAT_DEBUG_ROOM_ID']
         sender = os.environ['HIPCHAT_SENDER']
-        g.hipchatcli.message_room(room_id, sender, message,
-                                  message_format='html')
+
+        if message is not None:
+            g.hipchatcli.message_room(room_id, sender, message,
+                                      message_format='html')
 
     return 'success'
 
