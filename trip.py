@@ -107,7 +107,7 @@ def _get_message(js):
         message = fmt.format(action=action, data=data,
                              card_link=_card_link(data['board'], data['card']))
     elif action['type'] in ['addChecklistToCard', 'removeChecklistFromCard',
-                            'createCheckItem', 'deleteComment']:
+                            'createCheckItem', 'deleteComment', 'updateComment']:
         # Ignore all the above types
         ignore = True
 
