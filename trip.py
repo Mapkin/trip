@@ -6,17 +6,30 @@ from flask import Flask, request, g
 import hipchat
 app = Flask(__name__)
 
+
 @app.route('/<room_id>', methods=['POST'])
 def callback(room_id):
     if not hasattr(g, 'hipchatcli'):
         g.hipchatcli = hipchat.HipChat(os.environ['HIPCHAT_TOKEN'])
 
+    js = json.loads(request.data)
+    message, ignore = _get_message(js)
+
+    if not ignore:
+        if message is None:
+            message = pprint.pformat(js)
+        sender = os.environ['HIPCHAT_SENDER']
+        g.hipchatcli.message_room(room_id, sender, message, message_format='html')
+
+    return 'success'
+
+
+def _get_message(js):
     message = None
 
     # Set ignore to True if there are any actions we want to ignore
     ignore = False
 
-    js = json.loads(request.data)
     action = js['action']
     data = action['data']
     if action['type'] == 'updateCard':
@@ -89,13 +102,7 @@ def callback(room_id):
         # Ignore all the above types
         ignore = True
 
-    if not ignore:
-        if message is None:
-            message = pprint.pformat(js)
-        sender = os.environ['HIPCHAT_SENDER']
-        g.hipchatcli.message_room(room_id, sender, message, message_format='html')
-
-    return 'success'
+    return message, ignore
 
 
 def _card_link(board, card):
