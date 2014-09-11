@@ -65,6 +65,12 @@ def _get_message(js):
         # Ignore moving a card within a list
         elif 'pos' in data['old']:
             ignore = True
+    elif action['type'] == 'updateList':
+        # Rename a list
+        if 'name' in data['old']:
+            fmt = ("{action[memberCreator][fullName]} renamed list "
+                   "'{data[old][name]}' to '{data[list][name]}'")
+            message = fmt.format(action=action, data=data)
     elif action['type'] == 'commentCard':
         # Comment on a card
         text = markdown.markdown(data['text'])
