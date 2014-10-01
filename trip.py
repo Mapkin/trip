@@ -118,6 +118,12 @@ def _get_message(js):
                "{action[member][fullName]} to {card_link}")
         message = fmt.format(action=action,
                              card_link=_card_link(data['board'], data['card']))
+    elif action['type'] == 'removeMemberFromCard':
+        # Assign someone to the card
+        fmt = ("{action[memberCreator][fullName]} removed "
+               "{action[member][fullName]} to {card_link}")
+        message = fmt.format(action=action,
+                             card_link=_card_link(data['board'], data['card']))
     elif action['type'] in ['addChecklistToCard', 'removeChecklistFromCard',
                             'createCheckItem', 'deleteComment', 'updateComment']:
         # Ignore all the above types
