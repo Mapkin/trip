@@ -124,6 +124,13 @@ def _get_message(js):
                "{action[member][fullName]} to {card_link}")
         message = fmt.format(action=action,
                              card_link=_card_link(data['board'], data['card']))
+    elif action['type'] == 'addMemberToBoard':
+        fmt = ("{action[memberCreator][fullName]} added {action[member][fullName]} "
+               "to {board_link}")
+        message = fmt.format(action=action, board_link=_board_link(data['board']))
+    elif action['type'] == 'removeMemberFromBoard':
+        fmt = ("{action[memberCreator][fullName]} removed {action[member][fullName]} "
+               "to {board_link}")
     elif action['type'] in ['addChecklistToCard', 'removeChecklistFromCard',
                             'createCheckItem', 'deleteComment', 'updateComment']:
         # Ignore all the above types
@@ -139,6 +146,11 @@ def _card_link(board, card):
         board=board, card=card)
     return txt
 
+def _board_link(board):
+    txt = ("<a href='https://trello.com/board/{board[id]}'>"
+           "{board[name]}"
+           "</a>").format(board=board)
+    return txt
 
 if __name__ == '__main__':
     app.run()
