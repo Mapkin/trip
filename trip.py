@@ -62,6 +62,10 @@ def _get_message(js):
             message = fmt.format(
                 action=action,
                 card_link=_card_link(data['board'], data['card']))
+        elif 'closed' in data['old']:
+            fmt = "{action[memberCreator][fullName]} closed {card_link}"
+            message = fmt.format(
+                action=action, card_link=_card_link(data['board'], data['card']))
         # Ignore moving a card within a list
         elif 'pos' in data['old']:
             ignore = True
